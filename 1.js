@@ -1,67 +1,56 @@
 const express = require("express");
-const axios = require("axios");
 
 const app = express();
 const PORT = 3000;
 
-const API_URL = "https://taixiu1.taison01.com/api/luckydice1/GetSoiCau";
+/* ===========================
+   1️⃣ API BÀN THƯỜNG
+=========================== */
+app.get("/xd88", async (req, res) => {
+    try {
+        const response = await fetch("https://xd88txhu.hacksieucap.pro/xd88huddm");
+        const data = await response.json();
 
-// Biên dịch JSON → tiếng Việt
-function bienDichTaiXiu(item) {
-  const phienHienTai = item.SessionId + 1;
+        // đổi phiendudoan -> phien_hien_tai
+        if (data.phiendudoan) {
+            data.phien_hien_tai = data.phiendudoan;
+            delete data.phiendudoan;
+        }
 
-  return {
-    "Phiên trước": item.SessionId,
-    "Phiên hiện tại": phienHienTai,
-    "Xúc xắc 1": item.FirstDice,
-    "Xúc xắc 2": item.SecondDice,
-    "Xúc xắc 3": item.ThirdDice,
-    "Tổng điểm": item.DiceSum,
-    "Kết quả": item.BetSide === 1 ? "Xỉu" : "Tài"
-  };
-}
+        res.json(data);
 
-// API local – chỉ lấy phiên mới nhất
-app.get("/api/son", async (req, res) => {
-  try {
-    const response = await axios.get(API_URL, {
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-        "Accept": "application/json"
-      }
-    });
-
-    let data = response.data;
-
-    // Nếu API trả về object đơn
-    if (!Array.isArray(data)) {
-      return res.json(bienDichTaiXiu(data));
+    } catch (err) {
+        res.status(500).json({ error: "Lỗi bàn thường" });
     }
-
-    // Sắp xếp theo SessionId (mới → cũ)
-    data.sort((a, b) => b.SessionId - a.SessionId);
-
-    const newest = data[0];
-
-    res.json(bienDichTaiXiu(newest));
-
-  } catch (err) {
-    res.status(500).json({
-      error: true,
-      message: "Không lấy được dữ liệu Son Club",
-      detail: err.message
-    });
-  }
 });
 
-// Trang test
-app.get("/", (req, res) => {
-  res.send(`
-    <h2>Son Club Tài Xỉu (Phiên mới nhất)</h2>
-    <p>API: <a href="/api/son">/api/son</a></p>
-  `);
+/* ===========================
+   2️⃣ API MD5
+=========================== */
+app.get("/md5", async (req, res) => {
+    try {
+        const response = await fetch("https://xocdia88md5.hacksieucap.pro/txmd5v2");
+        const data = await response.json();
+
+        // đổi du_doan_van_sau -> du_doan
+        if (data.du_doan_van_sau) {
+            data.du_doan = data.du_doan_van_sau;
+            delete data.du_doan_van_sau;
+        }
+
+        // đổi phien_dudoan -> phien_hien_tai
+        if (data.phien_dudoan) {
+            data.phien_hien_tai = data.phien_dudoan;
+            delete data.phien_dudoan;
+        }
+
+        res.json(data);
+
+    } catch (err) {
+        res.status(500).json({ error: "Lỗi MD5" });
+    }
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server chạy tại http://localhost:${PORT}`);
+    console.log(`Server chạy tại http://localhost:${PORT}`);
 });
