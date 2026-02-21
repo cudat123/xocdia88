@@ -2,10 +2,10 @@
   "name": "api-proxy-xd88",
   "version": "1.0.0",
   "description": "Proxy API đổi key JSON cho xd88 và md5",
-  "main": "index.js",
+  "main": "1.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node index.js"
+    "start": "node 1.js"
   },
   "author": "Dat Tien",
   "license": "MIT",
